@@ -1,0 +1,18 @@
+# Render.com blueprint: one web service serves both the website and the API
+services:
+  - type: web
+    name: waffle-poll
+    runtime: node
+    plan: starter            # "free" sleeps when idle and is slow to wake up: do not use it on fest day
+    buildCommand: npm run build:prod
+    startCommand: npm run start:prod
+    healthCheckPath: /api/health
+    envVars:
+      - key: SHEETS_WEBHOOK_URL
+        sync: false
+      - key: ADMIN_KEY
+        sync: false
+      - key: TRUST_PROXY
+        value: "1"
+      - key: NODE_VERSION
+        value: "20"

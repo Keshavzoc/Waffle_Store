@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Production build outputs
+dist/
+client/dist/
+
+# Environment files with private keys/webhooks
+.env
+*.env
+client/.env
+server/.env
+
+# Local data / backup files
+server/data/*.imported
+server/data/responses.json
+server/data/*.jsonl
+
+# OS files
+.DS_Store
+Thumbs.db
