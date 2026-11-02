@@ -99,7 +99,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
       fontSrc: ['https://fonts.gstatic.com'],
       imgSrc: ["'self'", 'data:', 'https://images.unsplash.com', ...IMG_HOSTS.split(',').map((h) => h.trim()).filter(Boolean).map((h) => `https://${h}`)],
-      connectSrc: ["'self'"],
+      connectSrc: ["'self'", 'https://*.vercel.app', 'https://*.onrender.com', '*'],
       objectSrc: ["'none'"],
       baseUri: ["'self'"],
       frameAncestors: ["'self'"],
@@ -108,7 +108,13 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 app.use(compression());
-app.use(cors());
+app.use(cors({
+  origin: true,
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
+app.options('*', cors());
 app.use(express.json({ limit: '10kb' }));
 
 // Spam guard (high limit, because a whole college can share one internet address)
