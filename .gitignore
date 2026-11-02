@@ -8,9 +8,8 @@ client/dist/
 # Environment files with private keys/webhooks
 .env
 .env.*
-!.env.example
-client/.env
 server/.env
+!client/.env
 
 # Local data / backup files
 server/data/*.imported
