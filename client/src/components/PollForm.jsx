@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import { flavors } from '../config/content.js';
+import { apiUrl } from '../config/api.js';
 
-const API = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? ''
-  : (import.meta.env.VITE_API_URL || 'https://waffle-stall.onrender.com');
 const empty = { name: '', email: '', interested: '', flavors: [], quantity: 1, suggestion: '' };
 // Each answer gets its own id, so a double tap or a retry can never be counted twice
 const makeId = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
@@ -40,7 +38,7 @@ export default function PollForm() {
   async function send(payload) {
     for (let i = 0; i < 3; i++) {
       try {
-        const res = await fetch(`${API}/api/poll`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+        const res = await fetch(apiUrl('/api/poll'), { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
         if (res.ok) return null;
         if (res.status === 400 || res.status === 409) { const b = await res.json().catch(() => null); return b?.error || SORRY; }
       } catch { /* network problem, try again */ }
