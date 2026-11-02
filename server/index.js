@@ -90,14 +90,22 @@ if (WEBHOOK) {
 const app = express();
 app.disable('x-powered-by');
 if (TRUST_PROXY) app.set('trust proxy', 1);
+
+// Enable CORS for all incoming requests (Vercel, local dev, custom domains)
+app.use(cors({
+  origin: true,
+  credentials: true,
+}));
+app.options('*', cors());
+
 app.use(helmet({
   contentSecurityPolicy: {
     useDefaults: false,
     directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc: ["'self'"],
+      defaultSrc: ["'self'", '*'],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'"],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
-      fontSrc: ['https://fonts.gstatic.com'],
+      fontSrc: ['https://fonts.gstatic.com', 'data:'],
       imgSrc: ["'self'", 'data:', 'https://images.unsplash.com', ...IMG_HOSTS.split(',').map((h) => h.trim()).filter(Boolean).map((h) => `https://${h}`)],
       connectSrc: ["'self'", 'https://*.vercel.app', 'https://*.onrender.com', '*'],
       objectSrc: ["'none'"],
@@ -108,13 +116,6 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 app.use(compression());
-app.use(cors({
-  origin: true,
-  credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-app.options('*', cors());
 app.use(express.json({ limit: '10kb' }));
 
 // Spam guard (high limit, because a whole college can share one internet address)

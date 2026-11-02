@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { flavors } from '../config/content.js';
 
-const API = import.meta.env.VITE_API_URL || (import.meta.env.DEV ? '' : 'https://waffle-stall.onrender.com');
+const API = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  ? ''
+  : (import.meta.env.VITE_API_URL || 'https://waffle-stall.onrender.com');
 const empty = { name: '', email: '', interested: '', flavors: [], quantity: 1, suggestion: '' };
 // Each answer gets its own id, so a double tap or a retry can never be counted twice
 const makeId = () => globalThis.crypto?.randomUUID?.() ?? `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 12)}`;
